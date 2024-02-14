@@ -16,5 +16,8 @@ jobs:
         run: terraform fmt -check
         continue-on-error: false
 
+      - name: Terraform Init
+        run: terraform init
+
       - name: Terraform Validate
         run: terraform validate
