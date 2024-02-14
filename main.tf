@@ -12,22 +12,22 @@ resource "google_compute_network" "vpc_network" {
 
 resource "google_compute_subnetwork" "webapp_subnet" {
   name          = "webapp"
-  ip_cidr_range = "10.0.0.0/24"
+  ip_cidr_range = var.ip_cir_range_webapp
   region        = var.region
   network       = google_compute_network.vpc_network.id
 }
 
 resource "google_compute_subnetwork" "db_subnet" {
   name          = "db"
-  ip_cidr_range = "10.0.1.0/24"
+  ip_cidr_range = var.ip_cir_range_db
   region        = var.region
   network       = google_compute_network.vpc_network.id
 }
 
 resource "google_compute_route" "webapp_route" {
-  name             = "webapp-route"
-  dest_range       = "0.0.0.0/0"
+  name             = var.webapp_subnet_name
+  dest_range       = var.webapp_route_range
   network          = google_compute_network.vpc_network.id
   next_hop_gateway = "default-internet-gateway"
-  tags             = ["webapp"]
+  tags             = [var.webapp_route_tags]
 }
