@@ -9,16 +9,12 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Format
         run: terraform fmt -check
         continue-on-error: false
-
 
       - name: Terraform Validate
         run: terraform validate
