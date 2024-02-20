@@ -30,4 +30,4 @@ resource "google_compute_route" "webapp_route" {
   network          = google_compute_network.vpc_network.id
   next_hop_gateway = "default-internet-gateway"
   tags             = [var.webapp_route_tags]
-}
+
