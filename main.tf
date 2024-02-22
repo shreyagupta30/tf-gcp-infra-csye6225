@@ -42,7 +42,7 @@ resource "google_compute_firewall" "webapp_traffic" {
     ports    = var.allow_ports
   }
 
-  source_tags = var.source_tags
+  source_tags   = var.source_tags
   source_ranges = var.source_ranges
 }
 
