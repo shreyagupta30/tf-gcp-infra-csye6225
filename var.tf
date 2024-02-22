@@ -4,9 +4,8 @@ variable "project_id" {
 variable "region" {
   default = "us-east4"
 }
-variable "vpc_names" {
-  type = list(string)
-  default = ["csye-tf","csye-tf-2"]
+variable "vpc_name" {
+  default = "csye-tf"
 }
 
 variable "ip_cir_range_webapp" {
@@ -36,7 +35,7 @@ variable "name" {
   default = "webapp-traffic"
 }
 variable "protocol" {
-  default = "tcp" 
+  default = "tcp"
 }
 
 variable "allow_ports" {
@@ -55,7 +54,7 @@ variable "deny_ports" {
 }
 
 variable "machine_type" {
-  default = "e2-micro" 
+  default = "e2-micro"
 }
 
 variable "image" {
@@ -67,5 +66,5 @@ variable "type" {
 }
 
 variable "size" {
-  default = "100"
+  default = 100
 }

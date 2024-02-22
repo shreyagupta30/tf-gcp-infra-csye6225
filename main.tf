@@ -4,10 +4,9 @@ provider "google" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  for_each = var.vpc_names
-  name  = each.value
-  auto_create_subnetworks = false
-  routing_mode = var.routing_mode
+  name                            = var.vpc_name
+  auto_create_subnetworks         = false
+  routing_mode                    = var.routing_mode
   delete_default_routes_on_create = true
 }
 
@@ -33,6 +32,7 @@ resource "google_compute_route" "webapp_route" {
   tags             = var.webapp_route_tags
 }
 
+#firewall rules
 resource "google_compute_firewall" "webapp_traffic" {
   name    = var.name
   network = google_compute_network.vpc_network.id
@@ -57,6 +57,8 @@ resource "google_compute_firewall" "deny_ssh" {
 
   source_ranges = var.source_ranges
 }
+
+# VM instance
 resource "google_compute_instance" "webapp_vm" {
   name         = "webapp-instance"
   machine_type = var.machine_type
