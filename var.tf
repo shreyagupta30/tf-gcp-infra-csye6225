@@ -58,7 +58,7 @@ variable "machine_type" {
 }
 
 variable "image" {
-  default = ""
+  default = "centos-csye-deploy"
 }
 
 variable "type" {
