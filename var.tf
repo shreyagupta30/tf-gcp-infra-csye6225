@@ -8,11 +8,11 @@ variable "vpc_name" {
   default = "csye-tf"
 }
 
-variable "ip_cir_range_webapp" {
+variable "ip_cidr_range_webapp" {
   default = "10.0.0.0/24"
 }
 
-variable "ip_cir_range_db" {
+variable "ip_cidr_range_db" {
   default = "10.0.1.0/24"
 }
 
@@ -65,6 +65,76 @@ variable "type" {
   default = "pd-balanced"
 }
 
+variable "db_name" {
+  default = "db-instance"
+}
 variable "size" {
   default = 100
+}
+
+variable "deletion_protection" {
+  default = false
+}
+
+variable "prefix_length" {
+  default = 16
+}
+variable "availability_type" {
+  default = "REGIONAL"
+}
+
+variable "disk_type" {
+  default = "PD_SSD"
+}
+
+variable "disk_size" {
+  default = 100
+}
+
+variable "ipv4_enabled" {
+  default = false
+}
+
+variable "address_type" {
+  default = "INTERNAL"
+}
+
+variable "purpose" {
+  default = "VPC_PEERING"
+}
+
+variable "database_version" {
+  default = "POSTGRES_15"
+}
+
+variable "db_tier" {
+  default = "db-f1-micro"
+}
+
+variable "db_edition" {
+  default = "ENTERPRISE"
+}
+
+variable "private_service_name" {
+  default = "global-psconnect-ip"
+}
+
+variable "service_name" {
+  default = "servicenetworking.googleapis.com"
+}
+
+variable "password_length" {
+  default = 8
+}
+
+variable "special_characters" {
+  default = true
+}
+
+variable "string_length" {
+  default = 50
+}
+
+variable "id_byte_length" {
+  default = 4
 }

@@ -3,6 +3,10 @@ provider "google" {
   region  = var.region
 }
 
+resource "random_string" "random" {
+  length  = var.string_length
+  special = var.special_characters
+}
 resource "google_compute_network" "vpc_network" {
   name                            = var.vpc_name
   auto_create_subnetworks         = false
@@ -12,16 +16,17 @@ resource "google_compute_network" "vpc_network" {
 
 resource "google_compute_subnetwork" "webapp_subnet" {
   name          = "webapp"
-  ip_cidr_range = var.ip_cir_range_webapp
+  ip_cidr_range = var.ip_cidr_range_webapp
   region        = var.region
   network       = google_compute_network.vpc_network.id
 }
 
 resource "google_compute_subnetwork" "db_subnet" {
-  name          = "db"
-  ip_cidr_range = var.ip_cir_range_db
-  region        = var.region
-  network       = google_compute_network.vpc_network.id
+  name                     = "db"
+  ip_cidr_range            = var.ip_cidr_range_db
+  region                   = var.region
+  network                  = google_compute_network.vpc_network.id
+  private_ip_google_access = true
 }
 
 resource "google_compute_route" "webapp_route" {
@@ -78,5 +83,75 @@ resource "google_compute_instance" "webapp_vm" {
     access_config {
     }
   }
-  tags = var.source_tags
+  tags                    = var.source_tags
+  metadata_startup_script = <<-EOF
+  #!/bin/bash
+
+  # Create .env file
+  cat > /opt/app/.env <<EOF2
+  DB_HOST=${google_sql_database_instance.main.private_ip_address}
+  DB_USER=${google_sql_user.webapp_user.name}
+  DB_PASSWORD=${random_password.password.result}
+  DB_NAME=${google_sql_database.webapp_db.name}
+  DJANGO_SECRET_KEY=${random_string.random.result}
+  EOF2
+  EOF
+}
+
+#Private Service Access
+
+resource "google_compute_global_address" "private_ip_address" {
+  name          = var.private_service_name
+  address_type  = var.address_type
+  purpose       = var.purpose
+  prefix_length = var.prefix_length
+  network       = google_compute_network.vpc_network.id
+}
+
+
+resource "google_service_networking_connection" "private_vpc_connection" {
+  network                 = google_compute_network.vpc_network.name
+  service                 = var.service_name
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
+}
+
+
+#cloudSQL setup
+resource "random_id" "db_name_suffix" {
+  byte_length = var.id_byte_length
+}
+
+resource "google_sql_database_instance" "main" {
+  name                = "${var.db_name}-${random_id.db_name_suffix.hex}"
+  database_version    = var.database_version
+  deletion_protection = var.deletion_protection
+  depends_on          = [google_service_networking_connection.private_vpc_connection]
+
+  settings {
+    tier              = var.db_tier
+    edition           = var.db_edition
+    availability_type = var.availability_type
+    ip_configuration {
+      ipv4_enabled    = var.ipv4_enabled
+      private_network = google_compute_network.vpc_network.id
+    }
+    disk_type = var.disk_type
+    disk_size = var.disk_size
+  }
+}
+
+resource "google_sql_database" "webapp_db" {
+  name     = "webapp_db"
+  instance = google_sql_database_instance.main.id
+}
+
+resource "random_password" "password" {
+  length  = var.password_length
+  special = var.special_characters
+}
+
+resource "google_sql_user" "webapp_user" {
+  name     = "webapp_user"
+  instance = google_sql_database_instance.main.id
+  password = random_password.password.result
 }
