@@ -55,12 +55,34 @@ resource "google_compute_firewall" "deny_ssh" {
   name    = "deny-ssh"
   network = google_compute_network.vpc_network.id
 
-  deny {
+  allow {
     protocol = var.protocol
     ports    = var.deny_ports
   }
-
   source_ranges = var.source_ranges
+}
+
+#serivce account 
+resource "google_service_account" "service_account" {
+  account_id   = var.service_account_id
+  display_name = var.service_account_name
+  project = var.project_id
+}
+
+resource "google_project_iam_binding" "logging_admin" {
+  project = var.project_id
+  role    = "roles/logging.admin"
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}",
+  ]
+}
+
+resource "google_project_iam_binding" "monitoring_metric_writer" {
+  project = var.project_id
+  role    = "roles/monitoring.metricWriter"
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}",
+  ]
 }
 
 # VM instance
@@ -68,6 +90,7 @@ resource "google_compute_instance" "webapp_vm" {
   name         = "webapp-instance"
   machine_type = var.machine_type
   zone         = "${var.region}-a"
+  allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
@@ -96,6 +119,15 @@ resource "google_compute_instance" "webapp_vm" {
   DJANGO_SECRET_KEY=${random_string.random.result}
   EOF2
   EOF
+
+  service_account {
+    email  = google_service_account.service_account.email
+    scopes = ["cloud-platform"]
+  }
+  depends_on = [
+    google_service_account.service_account
+  ]
+
 }
 
 #Private Service Access
@@ -154,4 +186,14 @@ resource "google_sql_user" "webapp_user" {
   name     = "webapp_user"
   instance = google_sql_database_instance.main.id
   password = random_password.password.result
+}
+
+# DNS setup
+resource "google_dns_record_set" "a" {
+  name         = var.dns_name
+  managed_zone = var.zone_name
+  type         = "A"
+  ttl          = 300
+  rrdatas = [google_compute_instance.webapp_vm.network_interface[0].access_config[0].nat_ip]
+  project = var.project_id
 }
