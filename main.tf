@@ -66,7 +66,7 @@ resource "google_compute_firewall" "deny_ssh" {
 resource "google_service_account" "service_account" {
   account_id   = var.service_account_id
   display_name = var.service_account_name
-  project = var.project_id
+  project      = var.project_id
 }
 
 resource "google_project_iam_binding" "logging_admin" {
@@ -87,9 +87,9 @@ resource "google_project_iam_binding" "monitoring_metric_writer" {
 
 # VM instance
 resource "google_compute_instance" "webapp_vm" {
-  name         = "webapp-instance"
-  machine_type = var.machine_type
-  zone         = "${var.region}-a"
+  name                      = "webapp-instance"
+  machine_type              = var.machine_type
+  zone                      = "${var.region}-a"
   allow_stopping_for_update = true
 
   boot_disk {
@@ -194,6 +194,6 @@ resource "google_dns_record_set" "a" {
   managed_zone = var.zone_name
   type         = "A"
   ttl          = 300
-  rrdatas = [google_compute_instance.webapp_vm.network_interface[0].access_config[0].nat_ip]
-  project = var.project_id
+  rrdatas      = [google_compute_instance.webapp_vm.network_interface[0].access_config[0].nat_ip]
+  project      = var.project_id
 }
