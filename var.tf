@@ -54,7 +54,7 @@ variable "deny_ports" {
 }
 
 variable "machine_type" {
-  default = "e2-micro"
+  default = "e2-medium"
 }
 
 variable "image" {
@@ -137,4 +137,20 @@ variable "string_length" {
 
 variable "id_byte_length" {
   default = 4
+}
+
+variable "zone_name" {
+  default = "shreyagupta-csye"
+}
+
+variable "dns_name" {
+  default = "csye6225-assignment.store."
+}
+
+variable "service_account_id" {
+  default = "service-account-id"
+}
+
+variable "service_account_name" {
+  default = "service-account"
 }
