@@ -154,3 +154,11 @@ variable "service_account_id" {
 variable "service_account_name" {
   default = "service-account"
 }
+
+variable "dns_record_type" {
+  default = "A"
+}
+
+variable "dns_ttl" {
+  default = 300
+}

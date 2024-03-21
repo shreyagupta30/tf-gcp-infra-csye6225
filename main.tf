@@ -192,8 +192,8 @@ resource "google_sql_user" "webapp_user" {
 resource "google_dns_record_set" "a" {
   name         = var.dns_name
   managed_zone = var.zone_name
-  type         = "A"
-  ttl          = 300
+  type         = var.dns_record_type
+  ttl          = var.dns_ttl
   rrdatas      = [google_compute_instance.webapp_vm.network_interface[0].access_config[0].nat_ip]
   project      = var.project_id
 }
