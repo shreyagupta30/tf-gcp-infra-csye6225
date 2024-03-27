@@ -162,3 +162,59 @@ variable "dns_record_type" {
 variable "dns_ttl" {
   default = 300
 }
+
+variable "topic_name" {
+  default = "mailing_topic"
+}
+
+variable "message_retention_duration" {
+  default = "604800s"
+}
+
+variable "subscription_name" {
+  default = "verify_email_sub"
+}
+
+variable "function_name" {
+  default = "verify_email"
+}
+
+variable "function_runtime" {
+  default = "python311"
+}
+
+variable "function_entry_point" {
+  default = "runner_func"
+}
+
+variable "function_memory" {
+  default = 256
+}
+
+variable "function_timeout" {
+  default = 120
+}
+
+variable "function_source" {
+  default = "deploy.zip"
+}
+
+variable "bucket_name" {
+  default = "csye6225-assignment"
+}
+
+variable "bucket_region" {
+  default = "US"
+}
+
+variable "http_trigger" {
+  default = true
+}
+
+variable "http_security_level" {
+  default = "SECURE_ALWAYS"
+}
+
+variable "function_source_file" {
+  default = "runner.py"
+}

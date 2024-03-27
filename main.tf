@@ -197,3 +197,66 @@ resource "google_dns_record_set" "a" {
   rrdatas      = [google_compute_instance.webapp_vm.network_interface[0].access_config[0].nat_ip]
   project      = var.project_id
 }
+
+#pubsub topic
+resource "google_service_account" "service_account_pubsub" {
+  account_id   = "pubsub-service-account"
+  display_name = "PubSub Service Account"
+  project      = var.project_id
+}
+
+resource "google_project_iam_binding" "binding" {
+  project = var.project_id
+  role    = "roles/pubsub.publisher"
+
+  members = [
+    "serviceAccount:${google_service_account.service_account_pubsub.email}",
+    "serviceAccount:${google_service_account.service_account.email}"
+  ]
+}
+
+resource "google_pubsub_topic" "mailing_topic" {
+  name                       = var.topic_name
+  message_retention_duration = var.message_retention_duration
+}
+
+resource "google_storage_bucket" "code_bucket" {
+  name     = var.bucket_name
+  location = var.bucket_region
+}
+
+resource "google_cloudfunctions_function" "mail_function" {
+  name    = var.function_name
+  runtime = var.function_runtime
+
+  available_memory_mb          = var.function_memory
+  source_archive_bucket        = google_storage_bucket.code_bucket.name
+  trigger_http                 = var.http_trigger
+  https_trigger_security_level = var.http_security_level
+  source_archive_object        = var.function_source
+  timeout                      = var.function_timeout
+  entry_point                  = var.function_entry_point
+  environment_variables = {
+    DB_HOST     = google_sql_database_instance.main.private_ip_address
+    DB_USER     = google_sql_user.webapp_user.name
+    DB_PASSWORD = random_password.password.result
+    DB_NAME     = google_sql_database.webapp_db.name
+  }
+
+  service_account_email = google_service_account.service_account_pubsub.email
+}
+
+resource "google_project_iam_member" "cloudfunctions_invoker" {
+  project = var.project_id
+  role    = "roles/cloudfunctions.invoker"
+  member  = "serviceAccount:${google_service_account.service_account_pubsub.email}"
+}
+
+resource "google_pubsub_subscription" "verify_email_sub" {
+  name  = "verify_email_sub"
+  topic = google_pubsub_topic.mailing_topic.name
+
+  push_config {
+    push_endpoint = google_cloudfunctions_function.mail_function.https_trigger_url
+  }
+}
