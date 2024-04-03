@@ -39,7 +39,7 @@ variable "protocol" {
 }
 
 variable "allow_ports" {
-  default = ["8000"]
+  default = ["8000", "22"]
 }
 variable "source_tags" {
   default = ["webapp"]
@@ -171,10 +171,16 @@ variable "message_retention_duration" {
   default = "604800s"
 }
 
-variable "subscription_name" {
-  default = "verify_email_sub"
+variable "vpc-connector-name" {
+  default = "vpc-connector"
 }
 
+variable "vpc_connector_cidr" {
+  default = "10.10.0.0/28"
+}
+variable "function_location" {
+  default = "us-east4"
+}
 variable "function_name" {
   default = "verify_email"
 }
@@ -188,11 +194,18 @@ variable "function_entry_point" {
 }
 
 variable "function_memory" {
-  default = 256
+  default = "256Mi"
 }
 
 variable "function_timeout" {
-  default = 120
+  default = 60
+}
+
+variable "function_cpu" {
+  default = 1
+}
+variable "function_min_inst" {
+  default = 1
 }
 
 variable "function_source" {
@@ -207,14 +220,142 @@ variable "bucket_region" {
   default = "US"
 }
 
-variable "http_trigger" {
-  default = true
-}
-
-variable "http_security_level" {
-  default = "SECURE_ALWAYS"
-}
-
 variable "function_source_file" {
-  default = "runner.py"
+  default = "main.py"
+}
+
+variable "ingress_setting" {
+  default = "ALLOW_INTERNAL_ONLY"
+}
+
+variable "trigger_region" {
+  default = "us-east4"
+}
+
+variable "event_type" {
+  default = "google.cloud.pubsub.topic.v1.messagePublished"
+}
+
+variable "forwarding_rule_name" {
+  default = "lb-forwarding-rule"
+}
+
+variable "ip_protocol" {
+  default = "TCP"
+}
+
+variable "load_balancing_scheme" {
+  default = "EXTERNAL_MANAGED"
+}
+
+variable "port_range" {
+  default = "8000"
+}
+
+variable "network_tier" {
+  default = "STANDARD"
+}
+
+variable "http_proxy_name" {
+  default = "lb-http-proxy"
+}
+
+variable "url_map_name" {
+  default = "lb-url-map"
+}
+
+variable "backend_service_name" {
+  default = "lb-backend-service"
+}
+
+variable "load_balancer_scheme" {
+  default = "EXTERNAL_MANAGED"
+}
+
+variable "https_protocol" {
+  default = "HTTPS"
+}
+
+variable "session_affinity" {
+  default = "NONE"
+}
+
+variable "balancing_mode" {
+  default = "UTILIZATION"
+}
+
+
+variable "lb_address_type" {
+  default = "EXTERNAL"
+}
+
+variable "lb_address_name" {
+  default = "address_name"
+}
+
+variable "target_tags" {
+  default = ["load-balanced-backend"]
+}
+
+variable "proxy_source_ranges" {
+  default = ["10.129.0.0/23"]
+}
+
+variable "priority" {
+  default = 1000
+}
+
+variable "firewall_source_tags" {
+  default = ["130.211.0.0/22", "35.191.0.0/16"]
+}
+
+variable "vm_template_name" {
+  default = "webapp-instance-template"
+}
+
+variable "health_check_name" {
+  default = "webapp-health-check"
+}
+
+variable "check_interval_sec" {
+  default = 1
+}
+
+variable "timeout_sec" {
+  default = 1
+}
+
+variable "healthy_threshold" {
+  default = 4
+}
+
+variable "unhealthy_threshold" {
+  default = 4
+}
+
+variable "path" {
+  default = "/healthz"
+}
+
+variable "autoscaler_name" {
+  default = "webapp-autoscaler"
+}
+
+variable "max_replicas" {
+  default = 5
+}
+variable "min_replicas" {
+  default = 1
+}
+
+variable "cooldown_period" {
+  default = 60
+}
+
+variable "cpu_target" {
+  default = 0.05
+}
+
+variable "group_manager_name" {
+  default = "webapp-group-manager"
 }
