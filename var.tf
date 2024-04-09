@@ -1,8 +1,12 @@
 variable "project_id" {
-  default = "lateral-scion-414218"
+  default = "csye-6225-419603"
 }
 variable "region" {
   default = "us-east4"
+}
+
+variable "zone" {
+  default = "us-east4-a"
 }
 variable "vpc_name" {
   default = "csye-tf"
@@ -27,31 +31,62 @@ variable "webapp_route_range" {
 variable "webapp_route_tags" {
   default = ["webapp"]
 }
+
 variable "routing_mode" {
   default = "REGIONAL"
 }
-
-variable "name" {
-  default = "webapp-traffic"
-}
-variable "protocol" {
-  default = "tcp"
+variable "firewall_source_ranges" {
+  default = ["130.211.0.0/22", "35.191.0.0/16"]
 }
 
-variable "allow_ports" {
-  default = ["8000", "22"]
-}
-variable "source_tags" {
-  default = ["webapp"]
+variable "firewall_name" {
+  default = "healthz-firewall"
 }
 
-variable "source_ranges" {
-  default = ["0.0.0.0/0"]
+variable "firewal_direction" {
+  default = "INGRESS"
 }
 
-variable "deny_ports" {
-  default = ["22"]
+variable "firewall_protocol" {
+  default = "TCP"
 }
+
+variable "firewall_ports" {
+  default = ["80", "443", "8000"]
+}
+
+variable "firewall_priority" {
+  default = 1000
+}
+
+variable "firewall_proxy_source_ranges" {
+  default = ["10.129.0.0/23"]
+}
+variable "proxy_name" {
+  default = "webapp-proxy"
+}
+
+variable "proxy_ip_cidr_range" {
+  default = "10.129.0.0/23"
+}
+
+
+variable "proxy_purpose" {
+  default = "REGIONAL_MANAGED_PROXY"
+}
+
+variable "proxy_role" {
+  default = "ACTIVE"
+}
+
+variable "firewall_proxy_name" {
+  default = "webapp-firewall-proxy"
+}
+
+variable "vm_template_type" {
+  default = "pd-balanced"
+}
+
 
 variable "machine_type" {
   default = "e2-medium"
@@ -61,10 +96,29 @@ variable "image" {
   default = "centos-csye-deploy"
 }
 
-variable "type" {
-  default = "pd-balanced"
+variable "group_manger_name" {
+  default = "webapp-group-manager"
 }
 
+variable "group_manager_named_port_name" {
+  default = "http"
+}
+
+variable "backend_service_protocol" {
+  default = "HTTP"
+}
+
+variable "group_manager_named_port_port" {
+  default = 8000
+}
+
+variable "group_manager_target_name" {
+  default = "webapp-target"
+}
+
+variable "group_manager_target_size" {
+  default = 2
+}
 variable "db_name" {
   default = "db-instance"
 }
@@ -140,7 +194,7 @@ variable "id_byte_length" {
 }
 
 variable "zone_name" {
-  default = "shreyagupta-csye"
+  default = "csye6225-dns"
 }
 
 variable "dns_name" {
@@ -194,7 +248,7 @@ variable "function_entry_point" {
 }
 
 variable "function_memory" {
-  default = "256Mi"
+  default = "256M"
 }
 
 variable "function_timeout" {
@@ -213,7 +267,7 @@ variable "function_source" {
 }
 
 variable "bucket_name" {
-  default = "csye6225-assignment"
+  default = "csye6225-bucket-new"
 }
 
 variable "bucket_region" {
@@ -228,16 +282,8 @@ variable "ingress_setting" {
   default = "ALLOW_INTERNAL_ONLY"
 }
 
-variable "trigger_region" {
-  default = "us-east4"
-}
-
 variable "event_type" {
   default = "google.cloud.pubsub.topic.v1.messagePublished"
-}
-
-variable "forwarding_rule_name" {
-  default = "lb-forwarding-rule"
 }
 
 variable "ip_protocol" {
@@ -248,12 +294,15 @@ variable "load_balancing_scheme" {
   default = "EXTERNAL_MANAGED"
 }
 
-variable "port_range" {
-  default = "8000"
+variable "forwarding_port_range" {
+  default = "443"
+}
+variable "forwarding_rule_name" {
+  default = "lb-forwarding-rule"
 }
 
 variable "network_tier" {
-  default = "STANDARD"
+  default = "PREMIUM"
 }
 
 variable "http_proxy_name" {
@@ -262,14 +311,6 @@ variable "http_proxy_name" {
 
 variable "url_map_name" {
   default = "lb-url-map"
-}
-
-variable "backend_service_name" {
-  default = "lb-backend-service"
-}
-
-variable "load_balancer_scheme" {
-  default = "EXTERNAL_MANAGED"
 }
 
 variable "https_protocol" {
@@ -284,6 +325,9 @@ variable "balancing_mode" {
   default = "UTILIZATION"
 }
 
+variable "capacity" {
+  default = 1.0
+}
 
 variable "lb_address_type" {
   default = "EXTERNAL"
@@ -314,19 +358,33 @@ variable "vm_template_name" {
 }
 
 variable "health_check_name" {
-  default = "webapp-health-check"
+  default = "lb-health-check"
 }
 
+variable "compute_address_name" {
+  default = "compute-address-name"
+}
+
+variable "target_https_proxy_name" {
+  default = "lb-target-https-proxy"
+}
 variable "check_interval_sec" {
-  default = 1
+  default = 5
 }
 
 variable "timeout_sec" {
-  default = 1
+  default = 5
 }
 
 variable "healthy_threshold" {
-  default = 4
+  default = 2
+}
+variable "port_specification" {
+  default = "USE_SERVING_PORT"
+}
+
+variable "proxy_header" {
+  default = "NONE"
 }
 
 variable "unhealthy_threshold" {
@@ -337,6 +395,9 @@ variable "path" {
   default = "/healthz"
 }
 
+variable "backend_service_name" {
+  default = "lb-backend-service"
+}
 variable "autoscaler_name" {
   default = "webapp-autoscaler"
 }
