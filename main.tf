@@ -10,6 +10,13 @@ resource "random_string" "random" {
   special = var.special_characters
 }
 
+resource "google_compute_route" "webapp_route" {
+  name             = var.webapp_subnet_name
+  dest_range       = var.webapp_route_range
+  network          = google_compute_network.vpc_network.id
+  next_hop_gateway = "default-internet-gateway"
+}
+
 # SSL certificate
 resource "google_compute_region_ssl_certificate" "ssl" {
   name_prefix = "lb-ssl-certificate"

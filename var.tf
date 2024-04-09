@@ -20,14 +20,6 @@ variable "ip_cidr_range_db" {
   default = "10.0.1.0/24"
 }
 
-variable "webapp_subnet_name" {
-  default = "webapp-route"
-}
-
-variable "webapp_route_range" {
-  default = "0.0.0.0/0"
-}
-
 variable "webapp_route_tags" {
   default = ["webapp"]
 }
@@ -50,6 +42,14 @@ variable "firewal_direction" {
 variable "firewall_protocol" {
   default = "TCP"
 }
+
+variable "webapp_subnet_name" {
+  default = "webapp-subnet-route"
+}
+variable "webapp_route_range" {
+  default = "0.0.0.0/0"
+}
+
 
 variable "firewall_ports" {
   default = ["80", "443", "8000"]
