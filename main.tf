@@ -429,13 +429,13 @@ resource "google_project_iam_member" "mail_invoker" {
 }
 locals {
   secrets_for_vm = {
-    "DB_HOST"           = google_sql_database_instance.main.private_ip_address
-    "DB_USER"           = google_sql_user.webapp_user.name
-    "DB_PASSWORD"       = random_password.password.result
-    "DB_NAME"           = google_sql_database.webapp_db.name
-    "DJANGO_SECRET_KEY" = random_string.random.result
-    "GOOGLE_CLOUD_PROJECT_ID"    = var.project_id
-    "GOOGLE_CLOUD_PUBSUB_TOPIC_NAME"  = var.topic_name
+    "DB_HOST"                        = google_sql_database_instance.main.private_ip_address
+    "DB_USER"                        = google_sql_user.webapp_user.name
+    "DB_PASSWORD"                    = random_password.password.result
+    "DB_NAME"                        = google_sql_database.webapp_db.name
+    "DJANGO_SECRET_KEY"              = random_string.random.result
+    "GOOGLE_CLOUD_PROJECT_ID"        = var.project_id
+    "GOOGLE_CLOUD_PUBSUB_TOPIC_NAME" = var.topic_name
   }
 
   secrets_json = jsonencode(local.secrets_for_vm)
@@ -462,8 +462,8 @@ resource "google_kms_key_ring" "key_ring" {
 }
 
 resource "google_kms_crypto_key" "vm-key" {
-  name    = "vm-key-${random_id.name_suffix.hex}"
-  key_ring = google_kms_key_ring.key_ring.id
+  name            = "vm-key-${random_id.name_suffix.hex}"
+  key_ring        = google_kms_key_ring.key_ring.id
   rotation_period = "2592000s"
 
   lifecycle {
@@ -472,8 +472,8 @@ resource "google_kms_crypto_key" "vm-key" {
 }
 
 resource "google_kms_crypto_key" "db-key" {
-  name    = "db-key-${random_id.name_suffix.hex}"
-  key_ring = google_kms_key_ring.key_ring.id
+  name            = "db-key-${random_id.name_suffix.hex}"
+  key_ring        = google_kms_key_ring.key_ring.id
   rotation_period = "2592000s"
 
   lifecycle {
@@ -482,8 +482,8 @@ resource "google_kms_crypto_key" "db-key" {
 }
 
 resource "google_kms_crypto_key" "bucket-key" {
-  name    = "bucket-key-${random_id.name_suffix.hex}"
-  key_ring = google_kms_key_ring.key_ring.id
+  name            = "bucket-key-${random_id.name_suffix.hex}"
+  key_ring        = google_kms_key_ring.key_ring.id
   rotation_period = "2592000s"
 
   lifecycle {
@@ -493,7 +493,7 @@ resource "google_kms_crypto_key" "bucket-key" {
 
 resource "google_project_service_identity" "gcp_sa_cloud_sql" {
   provider = google-beta
-  project = var.project_id
+  project  = var.project_id
   service  = "sqladmin.googleapis.com"
 }
 
