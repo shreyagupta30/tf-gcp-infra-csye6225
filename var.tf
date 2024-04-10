@@ -9,7 +9,7 @@ variable "zone" {
   default = "us-east4-a"
 }
 variable "vpc_name" {
-  default = "csye-tf"
+  default = "assignment-tf"
 }
 
 variable "ip_cidr_range_webapp" {
@@ -32,7 +32,7 @@ variable "firewall_source_ranges" {
 }
 
 variable "firewall_name" {
-  default = "healthz-firewall"
+  default = "health-firewall"
 }
 
 variable "firewal_direction" {
@@ -270,9 +270,6 @@ variable "bucket_name" {
   default = "csye6225-bucket-new"
 }
 
-variable "bucket_region" {
-  default = "US"
-}
 
 variable "function_source_file" {
   default = "main.py"
