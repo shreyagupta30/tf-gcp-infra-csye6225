@@ -1,44 +1,96 @@
-# Terraform infrastructure on Google Cloud Platform 
+# CSYE6225 - Cloud Computing Infrastructure
 
-## Overview
+This repository contains the Terraform configuration for setting up a production-grade infrastructure on Google Cloud Platform (GCP) for a web application.
 
-This project uses Terraform to manage infrastructure on Google Cloud Platform (GCP). The configuration files included in this project are:
+## Infrastructure Components
 
-- `main.tf`: This is the primary configuration file for Terraform. It contains the definitions needed to create, modify, or delete resources such as virtual machines, network configurations, and more.
+### Network Infrastructure
+- **VPC Network**: Custom VPC network with regional routing mode
+- **Subnets**:
+  - Webapp Subnet: For hosting web application instances
+  - Database Subnet: For Cloud SQL instance with private IP
+  - Proxy-only Subnet: For load balancer
+- **Firewall Rules**: Configured for health checks and proxy access
+- **Routes**: Internet gateway route for webapp subnet
 
-- `var.tf`: This file is used to declare variables. Variables in Terraform allow for the definition of centrally controlled, reusable values. The goal is to define a variable once and reference it multiple times throughout the configuration.
+### Compute Resources
+- **Instance Template**: CentOS-based template for web application VMs
+- **Instance Group Manager**: Manages web application instances
+- **Autoscaler**: Automatically scales instances based on CPU utilization
+- **Load Balancer**: HTTPS load balancer with SSL certificate
 
-## Usage
+### Database
+- **Cloud SQL**: PostgreSQL 15 instance with private IP
+- **Database**: Dedicated database for the web application
+- **User**: Database user with secure password
 
-To use this configuration, you need to have Terraform installed on your machine. Once installed, navigate to the directory containing the `main.tf` file and run the following commands:
+### Storage & Messaging
+- **Cloud Storage**: Bucket for application code and assets
+- **Pub/Sub**: Topic for email notifications
+- **Cloud Functions**: Function for email verification
 
-``` bash
-# Initialize Terraform in your directory
-terraform init
+### Security
+- **Service Accounts**: Dedicated service accounts for different components
+- **IAM Roles**: Appropriate permissions for service accounts
+- **KMS**: Key management for encryption
+- **SSL Certificate**: For HTTPS load balancer
 
-# Plan and see the changes that will be made
-terraform plan
+### DNS
+- **Cloud DNS**: Managed DNS zone for the application domain
 
-# Apply the changes
-terraform apply
+## Prerequisites
+- Google Cloud Platform account
+- Terraform installed
+- GCP project with billing enabled
+- Required API services enabled in GCP project
+- SSL certificates for HTTPS load balancer
+
+## Configuration
+The infrastructure is configured using variables defined in `var.tf`. Key configurations include:
+- Project ID: csye-6225-419603
+- Region: us-east4
+- Zone: us-east4-a
+- Machine Type: e2-medium
+- Database Version: PostgreSQL 15
+- Database Tier: db-f1-micro
+
+## Deployment
+1. Initialize Terraform:
+   ```bash
+   terraform init
+   ```
+
+2. Review the planned changes:
+   ```bash
+   terraform plan
+   ```
+
+3. Apply the infrastructure:
+   ```bash
+   terraform apply
+   ```
+
+## Security Features
+- Private VPC network with restricted access
+- Encrypted storage using KMS
+- SSL/TLS for HTTPS traffic
+- Private IP for database
+- Service account-based authentication
+- Firewall rules for controlled access
+
+## Monitoring & Logging
+- Cloud Logging integration
+- Cloud Monitoring setup
+- Health checks for load balancer
+
+## Cleanup
+To destroy the infrastructure:
+```bash
+terraform destroy
 ```
 
-> **Note:** The actual behavior and resources created will depend on the specific content of the `main.tf` and variables declared in `var.tf` file.
-
-
-## Google Cloud Platform APIs
-
-The following APIs must be enabled on Google Cloud Platform for the successful creation of the resources:
-
-1. Compute Engine API
-2. Serverless VPC Access API
-3. Service Networking API
-4. Cloud DNS API
-5. Eventarc API
-6. Cloud Run Admin API
-7. Cloud Build API
-8. Cloud Functions API
-9. Cloud Logging API
-10. Cloud Pub/Sub API
-
-> **Note:** Please ensure these APIs are enabled in your GCP project before running the Terraform commands.
+## Notes
+- Ensure all required API services are enabled in the GCP project
+- Keep SSL certificates secure and up to date
+- Monitor costs regularly
+- Follow security best practices for managing secrets and credentials
