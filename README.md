@@ -1,6 +1,8 @@
-# CSYE6225 - Cloud Computing Infrastructure
+# gcp-webapp-infrastructure
 
-This repository contains the Terraform configuration for setting up a production-grade infrastructure on Google Cloud Platform (GCP) for a web application.
+A production-grade infrastructure as code (IaC) project using Terraform to deploy a scalable web application on Google Cloud Platform. This infrastructure includes a secure VPC network, auto-scaling compute instances, managed PostgreSQL database, load balancing, and integrated monitoring. Designed for high availability and security with features like private networking, encrypted storage, and automated scaling.
+
+![Infrastructure Diagram](static/infrastructure_diagram.jpeg)
 
 ## Infrastructure Components
 
